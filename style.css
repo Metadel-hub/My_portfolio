@@ -1,0 +1,789 @@
+/* ==========================================
+   1. Global Styling & Fluid Root Values
+   ========================================== */
+:root {
+  /* Unique section background colors */
+  --nav-bg: #090d18;
+  --home-bg: #0d1527;
+  --about-bg: #111a2e;
+  --projects-bg: #0d1527;
+  --skills-bg: #111a2e;
+  --contact-bg: #0d1527;
+  --footer-bg: #060911;
+
+  --card-bg: #16223b;
+  --card-hover-bg: #1c2b4a;
+  --accent-color: #00f2fe;
+  --accent-secondary: #4facfe;
+  --text-color: #e2e8f0;
+  --text-muted: #94a3b8;
+  --modal-bg: rgba(18, 28, 48, 0.95);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--home-bg);
+  color: var(--text-color);
+  line-height: 1.6;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================
+   2. Responsive Top Navigation Bar
+   ========================================== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(0.4rem, 1vw, 0.7rem) clamp(0.5rem, 1.5vw, 1.2rem);
+  background: rgba(9, 13, 24, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.logo {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: bold;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+}
+
+/* Hamburger Menu Icon */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1001;
+  margin-left: 0.2rem;
+}
+
+.menu-toggle span {
+  height: 3px;
+  width: 100%;
+  background-color: var(--text-color);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.nav-links,
+#nav-links {
+  display: flex;
+  list-style: none;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.nav-links a,
+#nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.nav-links a:hover,
+#nav-links a:hover {
+  color: var(--accent-color);
+  background: rgba(0, 242, 254, 0.1);
+}
+
+/* ==========================================
+   3. Section Structure & Home Hero Animations
+   ========================================== */
+section {
+  padding: clamp(5rem, 12vh, 8rem) clamp(1.2rem, 6vw, 6rem) clamp(3rem, 6vh, 5rem);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+section h2 {
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  margin-bottom: 2rem;
+}
+
+/* Section Backgrounds */
+#home {
+  position: relative;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), #182a52 0%, var(--home-bg) 70%);
+  overflow: hidden;
+  transition: background 0.1s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#about { background-color: var(--about-bg); }
+#projects { background-color: var(--projects-bg); }
+#skills { background-color: var(--skills-bg); }
+#contact { background-color: var(--contact-bg); }
+
+/* Animated Hero Elements */
+.hero-glow {
+  position: absolute;
+  top: var(--glow-y, 50%);
+  left: var(--glow-x, 50%);
+  width: clamp(250px, 45vw, 450px);
+  height: clamp(250px, 45vw, 450px);
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0,0,0,0) 70%);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+  transition: top 0.15s ease-out, left 0.15s ease-out;
+}
+
+@keyframes pulseGlow {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.9; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  max-width: min(100%, 900px);
+  margin-left: 0;
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  margin-bottom: 0.8rem;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.hero-title span {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--accent-secondary);
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.hero-description {
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  color: var(--text-muted);
+  margin-bottom: 2.2rem;
+  max-width: 65ch;
+  text-align: left;
+}
+
+/* Scroll Down Indicator Button */
+.scroll-down-btn {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+  z-index: 10;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+}
+
+.scroll-down-btn:hover {
+  color: var(--accent-color);
+}
+
+.scroll-down-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+  40% { transform: translateY(-10px) translateX(-50%); }
+  60% { transform: translateY(-5px) translateX(-50%); }
+}
+
+/* ==========================================
+   4. Buttons & Interactive Elements
+   ========================================== */
+.cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.btn {
+  padding: clamp(0.7rem, 1.5vw, 0.9rem) clamp(1.5rem, 2.5vw, 2.2rem);
+  border-radius: 5px;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-secondary));
+  color: #000;
+  border: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3);
+}
+
+.btn-small {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+/* ==========================================
+   5. About Section
+   ========================================== */
+.about-wrapper {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  margin: 2rem auto 0;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.about-image-container {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(288px, 44.8vw, 448px);
+  height: clamp(288px, 44.8vw, 448px);
+  max-width: 90vw;
+  max-height: 90vw;
+}
+
+.about-image-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+  background: var(--card-bg);
+  position: relative;
+  z-index: 2;
+}
+
+.about-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-image-container::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+  border-radius: 24px;
+  opacity: 0.3;
+  filter: blur(15px);
+  z-index: 1;
+}
+
+.about-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+.highlight-badge {
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-color);
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* ==========================================
+   6. Projects, Grid & Cards
+   ========================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(1rem, 2vw, 1.8rem);
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s, border-color 0.3s, background-color 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card h3 {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 242, 254, 0.4);
+}
+
+.card-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1rem;
+  gap: 0.5rem;
+}
+
+/* ==========================================
+   7. Skills Section
+   ========================================== */
+.skills-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 1.5rem;
+}
+
+.skills-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.skills-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent-color);
+  box-shadow: 0 8px 25px rgba(0, 242, 254, 0.15);
+}
+
+.skills-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.skills-card-header svg {
+  width: 28px;
+  height: 28px;
+  fill: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.skills-card-header h3 {
+  color: var(--text-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.skill-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+}
+
+.skill-name {
+  font-weight: 500;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skill-name::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+}
+
+.skill-level {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.skill-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skill-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-secondary), var(--accent-color));
+  border-radius: 10px;
+  transition: width 1s ease-in-out;
+}
+
+.skill-tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.skill-chip {
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+  color: var(--accent-secondary);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.skill-chip:hover {
+  background: rgba(0, 242, 254, 0.15);
+  color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+/* ==========================================
+   8. Contact Section & Modals
+   ========================================== */
+.contact-details-box {
+  background: var(--card-bg);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.contact-details-box p {
+  margin-bottom: 0.8rem;
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.contact-details-box strong {
+  color: var(--accent-color);
+}
+
+.social-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.card-footer-actions .social-logos {
+  margin-top: 0;
+  gap: 0.8rem;
+}
+
+.social-logos a {
+  color: var(--accent-secondary);
+  transition: color 0.3s, transform 0.3s;
+  display: inline-block;
+}
+
+.social-logos a:hover {
+  color: var(--accent-color);
+  transform: translateY(-3px);
+}
+
+.social-logos svg {
+  width: clamp(22px, 3vw, 26px);
+  height: clamp(22px, 3vw, 26px);
+  fill: currentColor;
+}
+
+/* Modal Overlay Styling */
+.modal,
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal.active,
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 4vw, 2.2rem) clamp(1.2rem, 3vw, 1.8rem);
+  border-radius: 12px;
+  width: min(100%, 650px);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.8rem;
+  right: 1rem;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.contact-form input, 
+.contact-form textarea {
+  width: 100%;
+  padding: clamp(0.6rem, 1.5vw, 0.8rem);
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: var(--text-color);
+  font-size: clamp(0.9rem, 1vw, 1rem);
+}
+
+.contact-form input:focus, 
+.contact-form textarea:focus {
+  outline: 1px solid var(--accent-color);
+}
+
+.project-detail-body h4 {
+  color: var(--accent-color);
+  margin: 1rem 0 0.4rem 0;
+}
+
+.project-detail-body p, 
+.project-detail-body ul {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.project-detail-body ul {
+  padding-left: 1.2rem;
+}
+
+/* ==========================================
+   9. Footer
+   ========================================== */
+footer {
+  background: var(--footer-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem clamp(1.2rem, 6vw, 6rem);
+  text-align: left;
+  color: var(--text-muted);
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  margin-top: auto;
+}
+
+/* ==========================================
+   10. Media Queries
+   ========================================== */
+@media (max-width: 768px) {
+  #home {
+    align-items: center;
+  }
+
+  .hero-content,
+  .hero-title,
+  .hero-subtitle,
+  .hero-description {
+    text-align: center;
+  }
+
+  .cta-buttons {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2rem;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+  }
+
+  .menu-toggle {
+    display: flex;
+    margin-left: 0;
+  }
+
+  .nav-links,
+  #nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: min(75%, 300px);
+    height: 100vh;
+    background: var(--nav-bg);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: right 0.3s ease;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    gap: 1.2rem;
+  }
+
+  .nav-links.active,
+  #nav-links.active {
+    right: 0;
+  }
+
+  .about-wrapper {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .about-highlights {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  nav {
+    padding: 0.6rem 2%;
+  }
+  .logo {
+    font-size: 1rem;
+  }
+  .grid, .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1800px) {
+  section {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}

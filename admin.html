@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Metadel Aschale</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; padding: 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    h1 { margin-bottom: 1.5rem; color: #38bdf8; }
+    .stats { margin-bottom: 2rem; background: #1e293b; padding: 1rem 1.5rem; border-radius: 8px; width: fit-content; }
+    table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #334155; }
+    th { background-color: #334155; color: #38bdf8; }
+    tr:hover { background-color: #0f172a; }
+    .btn-delete { background: #ef4444; color: #fff; border: none; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; }
+    .btn-delete:hover { background: #dc2626; }
+    .date-col { font-size: 0.85rem; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>የመልእክቶች ማስተዳደሪያ (Admin Dashboard)</h1>
+    <div class="stats">
+      <strong>ጠቅላላ የመጡ መልእክቶች፦</strong> <span id="msgCount">0</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ስም</th>
+          <th>ኢሜይል</th>
+          <th>መልእክት</th>
+          <th>ቀን</th>
+          <th>ተግባር</th>
+        </tr>
+      </thead>
+      <tbody id="messagesTable">
+        <tr><td colspan="5">መልእክቶች በመጫን ላይ ናቸው...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:5002/api/admin/messages';
+
+    // መልእክቶችን ከዳታቤዝ አምጥቶ ማሳያ
+    async function loadMessages() {
+      try {
+        const res = await fetch(API_BASE);
+        const result = await res.json();
+        const tbody = document.getElementById('messagesTable');
+        document.getElementById('msgCount').innerText = result.data.length;
+
+        if (!result.data || result.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5">ምንም የመጣ መልእክት የለም።</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = result.data.map(msg => `
+          <tr>
+            <td><strong>${msg.name}</strong></td>
+            <td><a href="mailto:${msg.email}" style="color: #38bdf8;">${msg.email}</a></td>
+            <td>${msg.message}</td>
+            <td class="date-col">${new Date(msg.createdAt).toLocaleString('et-ET')}</td>
+            <td>
+              <button class="btn-delete" onclick="deleteMessage('${msg._id}')">ሰርዝ</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        document.getElementById('messagesTable').innerHTML = '<tr><td colspan="5">መልእክቶችን ማምጣት አልተቻለም።</td></tr>';
+      }
+    }
+
+    // መልእክት ማጥፊያ ተግባር
+    async function deleteMessage(id) {
+      if (!confirm('ይህንን መልእክት ማጥፋት እርግጠኛ ነዎት?')) return;
+      
+      try {
+        const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+          loadMessages();
+        }
+      } catch (err) {
+        alert('ማጥፋት አልተቻለም።');
+      }
+    }
+
+    // ገጹ ሲከፈት ማናበብ
+    document.addEventListener('DOMContentLoaded', loadMessages);
+  </script>
+</body>
+</html>
