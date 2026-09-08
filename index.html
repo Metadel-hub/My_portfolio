@@ -367,10 +367,10 @@
       <h2>Contact Metadel Aschale</h2>
       <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: clamp(0.9rem, 1.2vw, 1rem);">Send a message directly to my inbox.</p>
       
-      <form class="contact-form" onsubmit="handleSubmit(event)">
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Your Email" required>
-        <textarea rows="4" placeholder="Your Message" required></textarea>
+      <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" rows="4" placeholder="Your Message" required></textarea>
         <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
       </form>
     </div>

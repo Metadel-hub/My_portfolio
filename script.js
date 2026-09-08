@@ -66,6 +66,73 @@ const projectDetails = {
   }
 };
 
+// 1. Contact Form Submit ማድረጊያ function (ወደ /api/contact እንዲልክ ተስተካክሏል)
+window.handleSubmit = async function (event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = {
+    name: form.name.value,
+    email: form.email.value,
+    message: form.message.value
+  };
+
+  try {
+    // 🔴 ማስተካከያ፡ ወደ /api/contact ኤንድፖይንት እንዲልክ ተደርጓል
+    const response = await fetch(`${API_BASE_URL}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(result.message || 'እናመሰግናለን! መልእክትዎ ለ Metadel Aschale ተልኳል።');
+      form.reset();
+      window.closeContact();
+    } else {
+      alert(result.message || 'ስህተት ተፈጥሯል!');
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+    alert('ከሰርቨሩ ጋር መገናኘት አልተቻለም!');
+  }
+};
+
+// 2. Project Modal ከ Backend Data (ከ Fallback ጋራ) የሚያመጣ function
+window.openProjectModal = async function (key) {
+  const modal = document.getElementById('projectModal');
+  const title = document.getElementById('projectModalTitle');
+  const content = document.getElementById('projectModalContent');
+  const githubLink = document.getElementById('projectGithubLink');
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/projects/${key}`);
+    const result = await response.json();
+
+    if (result.success && result.data) {
+      if (title) title.innerText = result.data.title;
+      if (content) content.innerHTML = result.data.description;
+      if (githubLink) githubLink.href = result.data.githubUrl || 'https://github.com/Metadel-hub';
+    } else {
+      throw new Error('Fallback to local');
+    }
+  } catch (error) {
+    console.error('Error fetching project, using fallback:', error);
+    if (projectDetails[key]) {
+      if (title) title.innerText = projectDetails[key].title;
+      if (content) content.innerHTML = projectDetails[key].description;
+      if (githubLink) githubLink.href = 'https://github.com/Metadel-hub';
+    }
+  }
+
+  if (modal) {
+    modal.classList.add('active');
+  }
+};
+
+// Modals & Navigation Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   // Navigation Menu Handlers
   window.toggleMenu = function () {
@@ -94,82 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactModal) contactModal.classList.remove('active');
   };
 
-// Backend Contact Form Submission Handler (Updated)
-  window.handleSubmit = async function (e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-
-    // Extract values dynamically using generic element selectors or fallbacks
-    const nameInput = form.querySelector('input[type="text"]');
-    const emailInput = form.querySelector('input[type="email"]');
-    const messageInput = form.querySelector('textarea');
-
-    const name = nameInput ? nameInput.value : '';
-    const email = emailInput ? emailInput.value : '';
-    const message = messageInput ? messageInput.value : '';
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-    }
-
-    try {
-      const response = await fetch('http://localhost:5002/api/admin/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, message })
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        alert('እናመሰግናለን! መልእክትዎ ለ Metadel Aschale ተልኳል።');
-        form.reset();
-        if (typeof window.closeContact === 'function') {
-          window.closeContact();
-        }
-      } else {
-        alert('መልእክት መላክ አልተቻለም: ' + (result.message || 'Server error'));
-      }
-    } catch (error) {
-      console.error('ስህተት ተፈጥሯል:', error);
-      alert('ከ Server ጋር መገናኘት አልተቻለም። እባክዎ ቆይተው እንደገና ይሞክሩ።');
-    } finally {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-      }
-    }
-  };
-
-  // Dynamic Project Modal Handler (API + Fallback)
-  window.openProjectModal = async function (key) {
-    const modal = document.getElementById('projectModal');
-    const title = document.getElementById('projectModalTitle');
-    const content = document.getElementById('projectModalContent');
-
-    if (modal) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/projects/${key}`);
-        const result = await response.json();
-        if (result.success && result.data) {
-          if (title) title.innerText = result.data.title;
-          if (content) content.innerHTML = result.data.description;
-        } else {
-          throw new Error('Fallback to local');
-        }
-      } catch (e) {
-        if (projectDetails[key]) {
-          if (title) title.innerText = projectDetails[key].title;
-          if (content) content.innerHTML = projectDetails[key].description;
-        }
-      }
-      modal.classList.add('active');
-    }
-  };
-
   window.closeProjectModal = function () {
     const modal = document.getElementById('projectModal');
     if (modal) modal.classList.remove('active');
@@ -195,24 +186,5 @@ document.addEventListener('DOMContentLoaded', () => {
       homeSection.style.setProperty('--glow-x', `${x}%`);
       homeSection.style.setProperty('--glow-y', `${y}%`);
     });
-  }
-});
-
-// ለኮንታክት ፎርም መረጃ መቀበያ
-app.post('/api/admin/messages', async (req, res) => {
-  try {
-    const { name, email, message } = req.body;
-
-    if (!name || !email || !message) {
-      return res.status(400).json({ success: false, message: 'እባክዎ ሁሉንም መስኮች ይሙሉ!' });
-    }
-
-    const newMessage = new Message({ name, email, message });
-    await newMessage.save();
-
-    res.status(200).json({ success: true, message: 'መልእክቱ በተሳካ ሁኔታ ተቀምጧል!' });
-  } catch (error) {
-    console.error('ስህተት:', error);
-    res.status(500).json({ success: false, message: 'የ ሰርቨር ስህተት ተፈጥሯል' });
   }
 });
