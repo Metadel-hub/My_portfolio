@@ -22,9 +22,23 @@
       <li><a href="#projects" onclick="closeMenu()">Projects</a></li>
       <li><a href="#skills" onclick="closeMenu()">Skills</a></li>
       <li><a href="#contact" onclick="openContact(event)">Contact</a></li>
+      <li><a href="#admin" onclick="openAdminModal(event)">Admin Login</a></li>
     </ul>
   </nav>
-
+<!-- Admin Login Modal -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-card">
+      <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+      <h2>የአስተዳዳሪ መግቢያ</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: clamp(0.9rem, 1.2vw, 1rem);">ዳሽቦርዱን ለመድረስ እባክዎ መለያዎን ያስገቡ።</p>
+      
+      <form class="contact-form" id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <input type="text" name="username" placeholder="የመለያ ስም (Username)" required>
+        <input type="password" name="password" placeholder="የይለፍ ቃል (Password)" required>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">ግባ</button>
+      </form>
+    </div>
+  </div>
   <!-- Animated Home Section -->
   <section id="home">
     <div class="hero-glow"></div>

@@ -6,9 +6,46 @@
   <title>Admin Dashboard | Metadel Aschale</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; padding: 2rem; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    h1 { margin-bottom: 1.5rem; color: #38bdf8; }
+    body { background-color: #0f172a; color: #f8fafc; }
+    
+    /* የዳሽቦርድ ራስጌ (Header) እና የቁልፍ ዲዛይን */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #1a1a2e;
+      border-bottom: 1px solid #334155;
+    }
+    
+    .admin-header h2 {
+      color: #38bdf8;
+      font-size: 1.5rem;
+    }
+
+    .logout-btn {
+      background-color: #ff4757;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logout-btn:hover {
+      background-color: #ff6b81;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 71, 87, 0.4);
+    }
+
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
     .stats { margin-bottom: 2rem; background: #1e293b; padding: 1rem 1.5rem; border-radius: 8px; width: fit-content; }
     table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 8px; overflow: hidden; }
     th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #334155; }
@@ -20,8 +57,16 @@
   </style>
 </head>
 <body>
+
+  <!-- ራስጌ ከቀኝ በኩል ከተቀመጠው ውብ የውጣ (Logout) ቁልፍ ጋር -->
+  <header class="admin-header">
+    <h2>የአስተዳዳሪ ዳሽቦርድ (Admin Dashboard)</h2>
+    <button onclick="handleAdminLogout()" class="logout-btn">
+      <span>🚪</span> ውጣ (Logout)
+    </button>
+  </header>
+
   <div class="container">
-    <h1>የመልእክቶች ማስተዳደሪያ (Admin Dashboard)</h1>
     <div class="stats">
       <strong>ጠቅላላ የመጡ መልእክቶች፦</strong> <span id="msgCount">0</span>
     </div>
@@ -43,7 +88,7 @@
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:5002/api/admin/messages';
+    const API_BASE = 'http://localhost:5003/api/admin/messages';
 
     // መልእክቶችን ከዳታቤዝ አምጥቶ ማሳያ
     async function loadMessages() {
@@ -86,6 +131,20 @@
         }
       } catch (err) {
         alert('ማጥፋት አልተቻለም።');
+      }
+    }
+
+    // መውጫ (Logout) ተግባር
+    window.handleAdminLogout = async function() {
+      try {
+        await fetch('http://localhost:5003/api/admin/logout', {
+          method: 'POST'
+        });
+      } catch (error) {
+        console.error('Logout error:', error);
+      } finally {
+        localStorage.removeItem('isAdminLoggedIn');
+        window.location.href = 'index.html';
       }
     }
 
